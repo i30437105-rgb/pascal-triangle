@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Паскаль: Треугольник — площадь и периметр</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f6fa;
+  --white: #ffffff;
+  --text: #1a1d2e;
+  --muted: #7a7f99;
+  --border: #e2e5f0;
+  --yellow: #f59e0b;
+  --yellow-light: #fffbeb;
+  --yellow-border: #fde68a;
+  --blue: #3b82f6;
+  --blue-light: #eff6ff;
+  --blue-border: #bfdbfe;
+  --green: #10b981;
+  --green-light: #ecfdf5;
+  --green-border: #a7f3d0;
+  --red: #ef4444;
+  --red-light: #fef2f2;
+  --red-border: #fecaca;
+  --purple: #8b5cf6;
+  --purple-light: #f5f3ff;
+  --purple-border: #ddd6fe;
+  --shadow: 0 2px 12px rgba(0,0,0,0.07);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Nunito', sans-serif;
+  font-size: 16px;
+  line-height: 1.75;
+}
+.container {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 40px 20px 80px;
+}
+.hero {
+  background: var(--white);
+  border-radius: 24px;
+  padding: 36px 32px 32px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  text-align: center;
+}
+.hero-emoji { font-size: 48px; margin-bottom: 12px; }
+.hero h1 {
+  font-size: clamp(22px, 5vw, 34px);
+  font-weight: 900;
+  line-height: 1.2;
+  margin-bottom: 10px;
+}
+.hero h1 span { color: var(--blue); }
+.hero p { color: var(--muted); font-size: 15px; max-width: 480px; margin: 0 auto; }
+.card {
+  background: var(--white);
+  border-radius: 20px;
+  padding: 28px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+@media(max-width:500px){ .card { padding: 20px 16px; } }
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.icon {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.icon-yellow { background: var(--yellow-light); }
+.icon-blue   { background: var(--blue-light); }
+.icon-green  { background: var(--green-light); }
+.icon-purple { background: var(--purple-light); }
+.icon-red    { background: var(--red-light); }
+.section-title h2 { font-size: 18px; font-weight: 800; }
+.step-list { list-style: none; }
+.step-list li {
+  display: flex; gap: 14px; padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  align-items: flex-start;
+}
+.step-list li:last-child { border-bottom: none; padding-bottom: 0; }
+.step-num {
+  min-width: 28px; height: 28px;
+  background: var(--blue-light); color: var(--blue);
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 13px; margin-top: 2px; flex-shrink: 0;
+}
+code {
+  font-family: 'Fira Code', monospace;
+  font-size: 13.5px;
+  background: var(--blue-light);
+  color: var(--blue);
+  padding: 1px 7px;
+  border-radius: 5px;
+  font-weight: 500;
+}
+.formula {
+  background: var(--yellow-light);
+  border: 1px solid var(--yellow-border);
+  border-left: 4px solid var(--yellow);
+  border-radius: 0 12px 12px 0;
+  padding: 14px 18px;
+  margin: 14px 0;
+  font-size: 15px;
+}
+.formula p { margin-bottom: 6px; }
+.formula p:last-child { margin-bottom: 0; }
+.box {
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin: 14px 0;
+  font-size: 15px;
+}
+.box-blue   { background: var(--blue-light); border: 1px solid var(--blue-border); }
+.box-green  { background: var(--green-light); border: 1px solid var(--green-border); }
+.box-red    { background: var(--red-light); border: 1px solid var(--red-border); }
+.box-purple { background: var(--purple-light); border: 1px solid var(--purple-border); }
+.box strong { font-weight: 800; }
+.box-blue strong   { color: var(--blue); }
+.box-green strong  { color: var(--green); }
+.box-red strong    { color: var(--red); }
+.box-purple strong { color: var(--purple); }
+.variant-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  border-radius: 100px; padding: 4px 14px;
+  font-size: 13px; font-weight: 800; margin-bottom: 12px;
+}
+.badge-blue  { background: var(--blue-light); color: var(--blue); }
+.badge-green { background: var(--green-light); color: var(--green); }
+.code-wrap { position: relative; margin-top: 12px; }
+pre {
+  background: #1e2235;
+  color: #e8eaf0;
+  border-radius: 14px;
+  padding: 22px 22px 18px;
+  overflow-x: auto;
+  font-family: 'Fira Code', monospace;
+  font-size: 13.5px;
+  line-height: 1.85;
+}
+@media(max-width:500px){ pre { font-size: 11.5px; padding: 16px 12px; } }
+.kw  { color: #c792ea; font-weight: 600; }
+.fn  { color: #5de4c7; }
+.str { color: #f7c948; }
+.cm  { color: #546e7a; font-style: italic; }
+.op  { color: #89ddff; }
+.nm  { color: #ff7eb3; }
+.copy-btn {
+  position: absolute; top: 10px; right: 10px;
+  background: rgba(255,255,255,0.1); color: #ccc;
+  border: 1px solid rgba(255,255,255,0.15); border-radius: 8px;
+  padding: 5px 12px; font-size: 12px;
+  font-family: 'Nunito', sans-serif; font-weight: 700;
+  cursor: pointer; transition: all 0.2s;
+}
+.copy-btn:hover { background: rgba(255,255,255,0.18); color: #fff; }
+.copy-btn.ok { color: #5de4c7; border-color: rgba(93,228,199,0.4); }
+.tri-vis {
+  display: flex; justify-content: center;
+  gap: 40px; flex-wrap: wrap; margin: 16px 0;
+}
+.tri-item { text-align: center; }
+.tri-item svg { display: block; margin: 0 auto 6px; }
+.tri-item p { font-size: 13px; font-weight: 800; color: var(--muted); }
+/* CALCULATOR */
+.calc-tabs {
+  display: flex; background: var(--bg);
+  border-radius: 12px; padding: 4px; margin-bottom: 20px;
+  border: 1px solid var(--border);
+}
+.ctab {
+  flex: 1; padding: 10px; border-radius: 9px;
+  font-weight: 800; font-size: 14px; text-align: center;
+  cursor: pointer; transition: all 0.2s; color: var(--muted);
+}
+.ctab.active {
+  background: var(--white); color: var(--blue);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.calc-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 14px; margin-bottom: 14px;
+}
+@media(max-width:500px){ .calc-grid { grid-template-columns: 1fr; } }
+.calc-field label {
+  display: block; font-size: 13px; font-weight: 800;
+  color: var(--muted); margin-bottom: 6px;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.calc-field input {
+  width: 100%; padding: 12px 14px;
+  border: 2px solid var(--border); border-radius: 12px;
+  font-size: 16px; font-family: 'Nunito', sans-serif;
+  font-weight: 700; color: var(--text); background: var(--bg);
+  transition: border-color 0.2s; outline: none;
+}
+.calc-field input:focus { border-color: var(--blue); background: var(--white); }
+.calc-btn {
+  width: 100%; padding: 14px; background: var(--blue);
+  color: white; border: none; border-radius: 12px;
+  font-size: 16px; font-weight: 800;
+  font-family: 'Nunito', sans-serif;
+  cursor: pointer; transition: background 0.2s, transform 0.1s;
+}
+.calc-btn:hover { background: #2563eb; }
+.calc-btn:active { transform: scale(0.98); }
+.calc-result {
+  display: none; margin-top: 14px;
+  background: var(--green-light); border: 1px solid var(--green-border);
+  border-radius: 14px; padding: 18px;
+}
+.calc-result.show { display: block; }
+.calc-result h4 {
+  font-size: 14px; font-weight: 800; color: var(--green);
+  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;
+}
+.result-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 0; border-bottom: 1px solid var(--green-border); font-size: 15px;
+}
+.result-row:last-child { border-bottom: none; padding-bottom: 0; }
+.result-row span:first-child { color: var(--muted); font-weight: 600; }
+.result-row span:last-child { font-weight: 800; font-size: 18px; }
+.calc-err {
+  display: none; margin-top: 10px;
+  background: var(--red-light); border: 1px solid var(--red-border);
+  border-radius: 10px; padding: 12px 14px;
+  font-weight: 700; color: var(--red); font-size: 14px;
+}
+.calc-err.show { display: block; }
+/* ERRORS */
+.error-item {
+  display: flex; gap: 12px; padding: 12px 0;
+  border-bottom: 1px solid var(--border); align-items: flex-start;
+}
+.error-item:last-child { border-bottom: none; }
+.err-icon { font-size: 20px; margin-top: 2px; flex-shrink: 0; }
+.err-text { font-size: 15px; }
+.err-text p { margin-top: 4px; color: var(--muted); font-size: 14px; }
+code.bad  { background: var(--red-light); color: var(--red); }
+code.good { background: var(--green-light); color: var(--green); }
+/* ANIM */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.card, .hero {
+  animation: fadeUp 0.45s ease both;
+}
+.hero              { animation-delay: 0.02s; }
+.card:nth-child(1) { animation-delay: 0.08s; }
+.card:nth-child(2) { animation-delay: 0.13s; }
+.card:nth-child(3) { animation-delay: 0.18s; }
+.card:nth-child(4) { animation-delay: 0.23s; }
+.card:nth-child(5) { animation-delay: 0.28s; }
+.card:nth-child(6) { animation-delay: 0.33s; }
+.footer {
+  text-align: center; color: var(--muted);
+  font-size: 13px; margin-top: 32px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="hero">
+    <div class="hero-emoji">📐</div>
+    <h1>Паскаль: считаем<br><span>площадь и периметр</span><br>треугольника</h1>
+    <p>Пошаговый разбор с нуля — даже если никогда не писал(а) программы. Два готовых варианта кода + калькулятор для проверки ответа.</p>
+  </div>
+
+  <!-- CARD 1: Структура -->
+  <div class="card">
+    <div class="section-title">
+      <div class="icon icon-yellow">🧱</div>
+      <h2>Как устроена любая программа на Паскале?</h2>
+    </div>
+    <p style="color:var(--muted); margin-bottom:14px;">Запомни этот шаблон — он одинаковый для всех программ. Меняется только содержимое внутри <code>begin...end</code>.</p>
+    <ul class="step-list">
+      <li>
+        <div class="step-num">1</div>
+        <div><code>program Название;</code><br>
+        <span style="color:var(--muted);font-size:14px;">Имя программы. Любое, без пробелов и русских букв. Чисто как заголовок — на работу программы не влияет.</span></div>
+      </li>
+      <li>
+        <div class="step-num">2</div>
+        <div><code>var имя : тип;</code><br>
+        <span style="color:var(--muted);font-size:14px;">«Коробочки» для хранения чисел. Сначала имя переменной, потом тип. <code>real</code> — дробные числа (3.5, 7.14). <code>integer</code> — только целые (1, 2, 3). Для треугольника нужен <code>real</code>!</span></div>
+      </li>
+      <li>
+        <div class="step-num">3</div>
+        <div><code>begin ... end.</code><br>
+        <span style="color:var(--muted);font-size:14px;">Всё между ними — команды программы. <strong>Точка в конце обязательна!</strong> Без точки Паскаль ругается.</span></div>
+      </li>
+      <li>
+        <div class="step-num">4</div>
+        <div><code>readln(a)</code><br>
+        <span style="color:var(--muted);font-size:14px;">Программа останавливается и ждёт, пока введёшь число. Введённое число сохраняется в переменную <em>a</em>.</span></div>
+      </li>
+      <li>
+        <div class="step-num">5</div>
+        <div><code>writeln('текст', a)</code><br>
+        <span style="color:var(--muted);font-size:14px;">Выводит на экран. Текст — в одинарных кавычках. Переменную — без кавычек. Можно через запятую смешивать: сначала текст, потом число.</span></div>
+      </li>
+      <li>
+        <div class="step-num">6</div>
+        <div><code>a := 5</code> — это <strong>присвоение</strong><br>
+        <span style="color:var(--muted);font-size:14px;"><code>:=</code> значит «возьми то, что справа, и запомни в переменную слева». Не путай с <code>=</code> — в Паскале это разные вещи!</span></div>
+      </li>
+      <li>
+        <div class="step-num">7</div>
+        <div><code>{ это комментарий }</code><br>
+        <span style="color:var(--muted);font-size:14px;">Всё в фигурных скобках Паскаль игнорирует. Это пометки для себя — можно писать любые объяснения.</span></div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- CARD 2: Два вида -->
+  <div class="card">
+    <div class="section-title">
+      <div class="icon icon-blue">🔺</div>
+      <h2>Два вида треугольника — два варианта</h2>
+    </div>
+    <p style="color:var(--muted); margin-bottom:16px;">Ниже представлены оба варианта. <strong>Если в задании не уточнено — выбирай Вариант 2</strong>, он работает для любого треугольника.</p>
+    <div class="tri-vis">
+      <div class="tri-item">
+        <svg width="130" height="105" viewBox="0 0 130 105">
+          <polygon points="8,97 8,15 108,97" fill="#eff6ff" stroke="#3b82f6" stroke-width="2.5" stroke-linejoin="round"/>
+          <rect x="8" y="86" width="12" height="12" fill="none" stroke="#3b82f6" stroke-width="1.8"/>
+          <text x="1" y="58" fill="#3b82f6" font-size="13" font-family="Nunito" font-weight="800">a</text>
+          <text x="50" y="108" fill="#3b82f6" font-size="13" font-family="Nunito" font-weight="800">b</text>
+          <text x="58" y="52" fill="#94a3b8" font-size="12" font-family="Nunito">c</text>
+        </svg>
+        <p>📐 Прямоугольный<br><span style="font-weight:400;font-size:12px;">2 катета → гипотенуза сама</span></p>
+      </div>
+      <div class="tri-item">
+        <svg width="130" height="105" viewBox="0 0 130 105">
+          <polygon points="65,8 8,97 122,97" fill="#ecfdf5" stroke="#10b981" stroke-width="2.5" stroke-linejoin="round"/>
+          <text x="22" y="60" fill="#10b981" font-size="13" font-family="Nunito" font-weight="800">b</text>
+          <text x="94" y="60" fill="#10b981" font-size="13" font-family="Nunito" font-weight="800">c</text>
+          <text x="58" y="108" fill="#10b981" font-size="13" font-family="Nunito" font-weight="800">a</text>
+        </svg>
+        <p>🔺 Произвольный<br><span style="font-weight:400;font-size:12px;">вводим 3 стороны</span></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 3: Вариант 1 -->
+  <div class="card">
+    <span class="variant-badge badge-blue">📐 Вариант 1 — Прямоугольный треугольник</span>
+    <div class="section-title">
+      <div class="icon icon-blue">➕</div>
+      <h2>Прямоугольный треугольник</h2>
+    </div>
+    <p>У него есть прямой угол (90°) — как угол в комнате. Мы знаем два катета <strong>a</strong> и <strong>b</strong>. Гипотенуза <strong>c</strong> (длинная сторона) считается автоматически.</p>
+    <div class="formula">
+      <p>📏 <strong>Площадь</strong> = (a × b) ÷ 2</p>
+      <p>📐 <strong>Гипотенуза</strong> c = √(a² + b²) &nbsp;<span style="font-size:13px;color:var(--muted)">(теорема Пифагора)</span></p>
+      <p>🔄 <strong>Периметр</strong> = a + b + c</p>
+    </div>
+    <div class="box box-blue">
+      <strong>💡 Математика в Паскале:</strong> квадратный корень — <code>sqrt(...)</code>, возведение в квадрат — <code>sqr(...)</code>. Например <code>sqrt(sqr(3)+sqr(4))</code> = √(9+16) = √25 = 5.
+    </div>
+    <div class="code-wrap">
+      <button class="copy-btn" onclick="copyCode('c1',this)">⎘ Копировать</button>
+      <pre id="c1"><span class="kw">program</span> Triangle_Right;
+<span class="cm">{ Площадь и периметр прямоугольного треугольника }</span>
+
+<span class="kw">var</span>
+  a, b : <span class="kw">real</span>;  <span class="cm">{ катеты — два перпендикулярных отрезка }</span>
+  c    : <span class="kw">real</span>;  <span class="cm">{ гипотенуза — длинная сторона }</span>
+  S    : <span class="kw">real</span>;  <span class="cm">{ S — площадь }</span>
+  P    : <span class="kw">real</span>;  <span class="cm">{ P — периметр }</span>
+
+<span class="kw">begin</span>
+  <span class="cm">{ Шаг 1: вводим катеты }</span>
+  <span class="fn">writeln</span>(<span class="str">'Введите катет a:'</span>);
+  <span class="fn">readln</span>(a);
+  <span class="fn">writeln</span>(<span class="str">'Введите катет b:'</span>);
+  <span class="fn">readln</span>(b);
+
+  <span class="cm">{ Шаг 2: гипотенуза по теореме Пифагора }</span>
+  c <span class="op">:=</span> <span class="fn">sqrt</span>(<span class="fn">sqr</span>(a) <span class="op">+</span> <span class="fn">sqr</span>(b));
+
+  <span class="cm">{ Шаг 3: площадь — основание умножить на высоту, разделить на 2 }</span>
+  S <span class="op">:=</span> (a <span class="op">*</span> b) <span class="op">/</span> <span class="nm">2</span>;
+
+  <span class="cm">{ Шаг 4: периметр — сумма всех трёх сторон }</span>
+  P <span class="op">:=</span> a <span class="op">+</span> b <span class="op">+</span> c;
+
+  <span class="cm">{ Шаг 5: выводим ответ. :0:2 = два знака после запятой }</span>
+  <span class="fn">writeln</span>(<span class="str">'Гипотенуза c = '</span>, c<span class="op">:</span><span class="nm">0</span><span class="op">:</span><span class="nm">2</span>);
+  <span class="fn">writeln</span>(<span class="str">'Площадь S = '</span>, S<span class="op">:</span><span class="nm">0</span><span class="op">:</span><span class="nm">2</span>);
+  <span class="fn">writeln</span>(<span class="str">'Периметр P = '</span>, P<span class="op">:</span><span class="nm">0</span><span class="op">:</span><span class="nm">2</span>);
+
+  <span class="fn">readln</span>  <span class="cm">{ чтобы окно не закрылось сразу }</span>
+<span class="kw">end</span>.</pre>
+    </div>
+  </div>
+
+  <!-- CARD 4: Вариант 2 -->
+  <div class="card">
+    <span class="variant-badge badge-green">🔺 Вариант 2 — Произвольный треугольник</span>
+    <div class="section-title">
+      <div class="icon icon-green">📏</div>
+      <h2>Произвольный треугольник (формула Герона)</h2>
+    </div>
+    <p>Когда треугольник не обязательно прямоугольный — вводим три стороны. Площадь считаем по <strong>формуле Герона</strong>. Греческий математик придумал её 2000 лет назад!</p>
+    <div class="formula">
+      <p>➡️ <strong>Периметр</strong> P = a + b + c</p>
+      <p>➡️ <strong>Полупериметр</strong> p = P ÷ 2 &nbsp;<span style="font-size:13px;color:var(--muted)">(нужен для формулы ниже)</span></p>
+      <p>🌿 <strong>Площадь</strong> S = √(p × (p−a) × (p−b) × (p−c))</p>
+    </div>
+    <div class="box box-green">
+      <strong>💡 Зачем полупериметр?</strong> Формула Герона работает только через полупериметр — так её придумали. Сначала считаем p = (a+b+c)÷2, потом подставляем в формулу. Всё!
+    </div>
+    <div class="code-wrap">
+      <button class="copy-btn" onclick="copyCode('c2',this)">⎘ Копировать</button>
+      <pre id="c2"><span class="kw">program</span> Triangle_Any;
+<span class="cm">{ Площадь и периметр любого треугольника — формула Герона }</span>
+
+<span class="kw">var</span>
+  a, b, c : <span class="kw">real</span>;  <span class="cm">{ три стороны }</span>
+  p       : <span class="kw">real</span>;  <span class="cm">{ полупериметр (половина периметра) }</span>
+  S       : <span class="kw">real</span>;  <span class="cm">{ площадь }</span>
+  P       : <span class="kw">real</span>;  <span class="cm">{ периметр }</span>
+
+<span class="kw">begin</span>
+  <span class="cm">{ Шаг 1: вводим три стороны }</span>
+  <span class="fn">writeln</span>(<span class="str">'Введите сторону a:'</span>);
+  <span class="fn">readln</span>(a);
+  <span class="fn">writeln</span>(<span class="str">'Введите сторону b:'</span>);
+  <span class="fn">readln</span>(b);
+  <span class="fn">writeln</span>(<span class="str">'Введите сторону c:'</span>);
+  <span class="fn">readln</span>(c);
+
+  <span class="cm">{ Шаг 2: периметр и полупериметр }</span>
+  P <span class="op">:=</span> a <span class="op">+</span> b <span class="op">+</span> c;
+  p <span class="op">:=</span> P <span class="op">/</span> <span class="nm">2</span>;
+
+  <span class="cm">{ Шаг 3: формула Герона }</span>
+  S <span class="op">:=</span> <span class="fn">sqrt</span>(p <span class="op">*</span> (p <span class="op">-</span> a) <span class="op">*</span> (p <span class="op">-</span> b) <span class="op">*</span> (p <span class="op">-</span> c));
+
+  <span class="cm">{ Шаг 4: выводим результат }</span>
+  <span class="fn">writeln</span>(<span class="str">'Площадь S = '</span>, S<span class="op">:</span><span class="nm">0</span><span class="op">:</span><span class="nm">2</span>);
+  <span class="fn">writeln</span>(<span class="str">'Периметр P = '</span>, P<span class="op">:</span><span class="nm">0</span><span class="op">:</span><span class="nm">2</span>);
+
+  <span class="fn">readln</span>
+<span class="kw">end</span>.</pre>
+    </div>
+  </div>
+
+  <!-- CARD 5: КАЛЬКУЛЯТОР -->
+  <div class="card">
+    <div class="section-title">
+      <div class="icon icon-purple">🧮</div>
+      <h2>Проверь — онлайн калькулятор</h2>
+    </div>
+    <p style="color:var(--muted); margin-bottom:16px;">Введи числа и посмотри правильный ответ. Потом запусти программу в Паскале и сравни — должно совпасть!</p>
+
+    <div class="calc-tabs">
+      <div class="ctab active" onclick="switchCalc('right',this)">📐 Прямоугольный</div>
+      <div class="ctab" onclick="switchCalc('any',this)">🔺 Произвольный</div>
+    </div>
+
+    <div id="calc-right">
+      <div class="calc-grid">
+        <div class="calc-field">
+          <label>Катет a</label>
+          <input type="number" id="r_a" placeholder="например: 3" min="0.01" step="any">
+        </div>
+        <div class="calc-field">
+          <label>Катет b</label>
+          <input type="number" id="r_b" placeholder="например: 4" min="0.01" step="any">
+        </div>
+      </div>
+      <button class="calc-btn" onclick="calcRight()">Посчитать ✨</button>
+      <div class="calc-err" id="r_err">⚠️ Введи оба числа больше нуля!</div>
+      <div class="calc-result" id="r_res">
+        <h4>✅ Правильный ответ</h4>
+        <div class="result-row"><span>Гипотенуза c</span><span id="r_c">—</span></div>
+        <div class="result-row"><span>Площадь S</span><span id="r_s">—</span></div>
+        <div class="result-row"><span>Периметр P</span><span id="r_p">—</span></div>
+      </div>
+    </div>
+
+    <div id="calc-any" style="display:none">
+      <div class="calc-grid">
+        <div class="calc-field">
+          <label>Сторона a</label>
+          <input type="number" id="a_a" placeholder="например: 5" min="0.01" step="any">
+        </div>
+        <div class="calc-field">
+          <label>Сторона b</label>
+          <input type="number" id="a_b" placeholder="например: 6" min="0.01" step="any">
+        </div>
+        <div class="calc-field">
+          <label>Сторона c</label>
+          <input type="number" id="a_c" placeholder="например: 7" min="0.01" step="any">
+        </div>
+      </div>
+      <button class="calc-btn" onclick="calcAny()">Посчитать ✨</button>
+      <div class="calc-err" id="a_err">⚠️ Числа должны быть больше нуля и образовывать треугольник (сумма любых двух сторон должна быть больше третьей)!</div>
+      <div class="calc-result" id="a_res">
+        <h4>✅ Правильный ответ</h4>
+        <div class="result-row"><span>Площадь S</span><span id="a_s">—</span></div>
+        <div class="result-row"><span>Периметр P</span><span id="a_p">—</span></div>
+      </div>
+    </div>
+
+    <div class="box box-purple" style="margin-top:16px;">
+      <strong>🎯 Тест для проверки:</strong> Введи катеты 3 и 4. Должно получиться: гипотенуза = 5.00, площадь = 6.00, периметр = 12.00. Это знаменитый «египетский» прямоугольный треугольник!
+    </div>
+  </div>
+
+  <!-- CARD 6: Ошибки из урока -->
+  <div class="card">
+    <div class="section-title">
+      <div class="icon icon-red">🔍</div>
+      <h2>Разбор ошибок из кода на уроке</h2>
+    </div>
+    <p style="color:var(--muted); margin-bottom:14px;">На скриншоте с урока была незаконченная программа. Вот все ошибки — чтобы не повторить:</p>
+
+    <div class="error-item">
+      <div class="err-icon">❌</div>
+      <div class="err-text">
+        <code class="bad">wirte('S=', S)</code> &nbsp;→&nbsp; <code class="good">writeln('S=', S)</code>
+        <p>Опечатка в команде. Паскаль не угадывает — нужно писать точно. Также лучше использовать <code>writeln</code> (с ln в конце), тогда каждый результат будет на новой строке.</p>
+      </div>
+    </div>
+    <div class="error-item">
+      <div class="err-icon">❌</div>
+      <div class="err-text">
+        <code class="bad">S := a*b</code> &nbsp;→&nbsp; <code class="good">S := (a*b)/2</code>
+        <p>Формула площади прямоугольника! Треугольник — это «половина прямоугольника», поэтому нужно разделить на 2.</p>
+      </div>
+    </div>
+    <div class="error-item">
+      <div class="err-icon">❌</div>
+      <div class="err-text">
+        <code class="bad">P := (a*b)*2</code> &nbsp;→&nbsp; <code class="good">P := a + b + c</code>
+        <p>Это периметр прямоугольника. Периметр любой фигуры = сумма всех сторон. У треугольника три стороны — складываем все три.</p>
+      </div>
+    </div>
+    <div class="error-item">
+      <div class="err-icon">❌</div>
+      <div class="err-text">
+        <code class="bad">var a, b, s: integer</code> &nbsp;→&nbsp; <code class="good">var a, b, s: real</code>
+        <p>Тип <code>integer</code> — только целые числа. Стороны могут быть дробными (3.5, 2.7...). Нужен тип <code>real</code>, иначе дробная часть просто обрежется и ответ будет неправильным.</p>
+      </div>
+    </div>
+    <div class="error-item">
+      <div class="err-icon">❌</div>
+      <div class="err-text">
+        Переменная <code class="bad">c</code> (гипотенуза) не объявлена в блоке <code>var</code>
+        <p>Все переменные, которые используются в программе, обязательно нужно сначала объявить в <code>var</code>. Иначе Паскаль скажет «что это такое?» и не запустит программу.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">Удачи на уроке! 🍀 &nbsp;·&nbsp; PascalABC.NET 3.11</div>
+</div>
+
+<script>
+function copyCode(id, btn) {
+  navigator.clipboard.writeText(document.getElementById(id).innerText).then(() => {
+    btn.textContent = '✓ Скопировано!';
+    btn.classList.add('ok');
+    setTimeout(() => { btn.textContent = '⎘ Копировать'; btn.classList.remove('ok'); }, 2000);
+  });
+}
+function switchCalc(mode, el) {
+  document.querySelectorAll('.ctab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('calc-right').style.display = mode === 'right' ? 'block' : 'none';
+  document.getElementById('calc-any').style.display   = mode === 'any'   ? 'block' : 'none';
+  ['r_res','r_err','a_res','a_err'].forEach(id => document.getElementById(id).classList.remove('show'));
+}
+function calcRight() {
+  const a = parseFloat(document.getElementById('r_a').value);
+  const b = parseFloat(document.getElementById('r_b').value);
+  const err = document.getElementById('r_err');
+  const res = document.getElementById('r_res');
+  if (!a || !b || a <= 0 || b <= 0) { err.classList.add('show'); res.classList.remove('show'); return; }
+  err.classList.remove('show');
+  const c = Math.sqrt(a*a + b*b);
+  document.getElementById('r_c').textContent = c.toFixed(2);
+  document.getElementById('r_s').textContent = ((a*b)/2).toFixed(2);
+  document.getElementById('r_p').textContent = (a+b+c).toFixed(2);
+  res.classList.add('show');
+}
+function calcAny() {
+  const a = parseFloat(document.getElementById('a_a').value);
+  const b = parseFloat(document.getElementById('a_b').value);
+  const c = parseFloat(document.getElementById('a_c').value);
+  const err = document.getElementById('a_err');
+  const res = document.getElementById('a_res');
+  if (!a||!b||!c||a<=0||b<=0||c<=0||(a+b<=c)||(a+c<=b)||(b+c<=a)) {
+    err.classList.add('show'); res.classList.remove('show'); return;
+  }
+  err.classList.remove('show');
+  const P = a+b+c, p = P/2;
+  document.getElementById('a_s').textContent = Math.sqrt(p*(p-a)*(p-b)*(p-c)).toFixed(2);
+  document.getElementById('a_p').textContent = P.toFixed(2);
+  res.classList.add('show');
+}
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  document.getElementById('calc-right').style.display !== 'none' ? calcRight() : calcAny();
+});
+</script>
+</body>
+</html>
